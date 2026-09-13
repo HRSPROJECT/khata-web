@@ -309,6 +309,19 @@ label input:focus { border-color: #a0a8ea; box-shadow: 0 0 0 3px #5b65d812; }
 .compact-stats { margin-bottom: 16px; }
 .compact-stats .stat { padding: 14px; }
 .compact-stats .stat strong { font-size: 22px; }
+.qr-box {
+  display: grid; justify-items: center; gap: 8px;
+  background: var(--bg); border: 1px solid var(--line); border-radius: 14px; padding: 18px 14px;
+}
+.qr-box small { color: var(--muted); font-size: 11px; font-weight: 700; }
+.qr-svg svg { width: min(240px, 64vw); height: auto; border-radius: 8px; background: #fff; }
+.collect-open {
+  display: block; text-align: center; text-decoration: none;
+}
+.collect-actions { margin-top: 4px; }
+.collect-actions .primary { background: var(--green); box-shadow: 0 7px 16px #25a77a2e; }
+.collect-actions .primary:hover { background: #1f9269; }
+.collect-actions .primary:disabled, .outline:disabled { opacity: .45; cursor: not-allowed; }
 .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 20px; margin-bottom: 16px; }
 .card h2 { margin-bottom: 10px; }
 .settings .card .primary, .settings .card .outline { width: fit-content; }

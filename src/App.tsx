@@ -30,7 +30,6 @@ import {
   statementText,
   telLink,
   tone,
-  upiPayLink,
   waLink,
 } from './format'
 import { usePwaInstall } from './pwa'
@@ -289,6 +288,17 @@ function App() {
             business={data.settings.businessName}
             upiId={data.settings.upiId}
             onBack={() => go('/')}
+            onCollectPayment={amount => {
+              const tx = {
+                id: id('transaction'),
+                type: 'payment' as TransactionType,
+                amount,
+                date: new Date().toISOString(),
+                note: 'UPI collection',
+                dueDate: '',
+              }
+              updateCustomer({ ...selected, transactions: [...selected.transactions, tx] }, `Collected ${money(amount)}`)
+            }}
             onTransaction={type => {
               setTransactionType(type)
               setEditingTx(null)
@@ -594,6 +604,7 @@ function Dashboard({
 
 import { Stat } from './Stat'
 import { downloadStatementPdf } from './statement'
+import { CollectModal } from './CollectModal'
 
 const SyncPage = lazy(() => import('./SyncPage'))
 
@@ -602,6 +613,7 @@ function Ledger({
   business,
   upiId,
   onBack,
+  onCollectPayment,
   onTransaction,
   onEditCustomer,
   onEditTransaction,
@@ -612,6 +624,7 @@ function Ledger({
   business: string
   upiId: string
   onBack: () => void
+  onCollectPayment: (amount: number) => void
   onTransaction: (type: TransactionType) => void
   onEditCustomer: () => void
   onEditTransaction: (tx: Transaction) => void
@@ -635,7 +648,7 @@ function Ledger({
       return `${tx.note} ${tx.amount} ${formatDate(tx.date)}`.toLowerCase().includes(q)
     })
     .sort((a, b) => b.date.localeCompare(a.date))
-  const upiHref = upiId.trim() && value > 0 ? upiPayLink(upiId, value, `${business} dues · ${customer.name}`) : ''
+  const [showCollect, setShowCollect] = useState(false)
   const [pdfBusy, setPdfBusy] = useState(false)
   const downloadPdf = async () => {
     if (pdfBusy) return
@@ -699,10 +712,10 @@ function Ledger({
         <a className="quick" href={waLink(customer.phone, reminderText(business, customer))} target="_blank" rel="noreferrer">
           WhatsApp
         </a>
-        {upiHref && (
-          <a className="quick collect" href={upiHref}>
+        {upiId.trim() && value > 0 && (
+          <button className="quick collect" onClick={() => setShowCollect(true)}>
             Collect {money(value)} via UPI
-          </a>
+          </button>
         )}
         <button className="quick" onClick={() => void share()}>
           Share
@@ -817,6 +830,18 @@ function Ledger({
           <small>Payment or goods received</small>
         </button>
       </div>
+      {showCollect && (
+        <CollectModal
+          customer={customer}
+          business={business}
+          upiId={upiId}
+          onClose={() => setShowCollect(false)}
+          onCollected={amount => {
+            onCollectPayment(amount)
+            setShowCollect(false)
+          }}
+        />
+      )}
     </section>
   )
 }

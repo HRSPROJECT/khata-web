@@ -19,8 +19,7 @@ The production build is a PWA: Web App Manifest, service worker, maskable icons,
 - Parties with Indian mobile numbers, address, notes, and per-customer **credit limits** with over-limit warnings
 - You gave / You got entries, bill photos, optional due dates, per-ledger search + type filters
 - **Dues intelligence**: due-today strip, due-this-week, overdue collections with per-row WhatsApp reminders + copy-all reminders
-- **UPI collection**: save your UPI ID in Settings, customers get a one-tap `upi://pay` button for exact dues
-- Search across names, phones, and notes; filter by to-take, to-give, overdue, settled
+- **UPI collection**: save your UPI ID in Settings, then collect with a scannable QR for the exact (or partial) dues — Mark collected records the payment, Share uses the OS share sheet, Close records nothing- Search across names, phones, and notes; filter by to-take, to-give, overdue, settled
 - WhatsApp reminders, call, share statement, print, **downloadable PDF statement of account** (with running balance), per-customer CSV
 - Monthly reports, 6-month gave/got chart, overdue collections, recent activity
 - Dark / light / system theme
