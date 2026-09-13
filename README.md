@@ -21,7 +21,7 @@ The production build is a PWA: Web App Manifest, service worker, maskable icons,
 - **Dues intelligence**: due-today strip, due-this-week, overdue collections with per-row WhatsApp reminders + copy-all reminders
 - **UPI collection**: save your UPI ID in Settings, customers get a one-tap `upi://pay` button for exact dues
 - Search across names, phones, and notes; filter by to-take, to-give, overdue, settled
-- WhatsApp reminders, call, share statement, print / PDF, per-customer CSV
+- WhatsApp reminders, call, share statement, print, **downloadable PDF statement of account** (with running balance), per-customer CSV
 - Monthly reports, 6-month gave/got chart, overdue collections, recent activity
 - Dark / light / system theme
 - Optional 4-digit PIN lock for this browser profile

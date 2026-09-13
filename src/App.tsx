@@ -593,6 +593,7 @@ function Dashboard({
 }
 
 import { Stat } from './Stat'
+import { downloadStatementPdf } from './statement'
 
 const SyncPage = lazy(() => import('./SyncPage'))
 
@@ -635,6 +636,18 @@ function Ledger({
     })
     .sort((a, b) => b.date.localeCompare(a.date))
   const upiHref = upiId.trim() && value > 0 ? upiPayLink(upiId, value, `${business} dues · ${customer.name}`) : ''
+  const [pdfBusy, setPdfBusy] = useState(false)
+  const downloadPdf = async () => {
+    if (pdfBusy) return
+    setPdfBusy(true)
+    try {
+      await downloadStatementPdf(business, customer)
+    } catch {
+      alert('Could not generate the PDF. Please retry.')
+    } finally {
+      setPdfBusy(false)
+    }
+  }
   const share = async () => {
     const text = statementText(business, customer)
     if (navigator.share) {
@@ -694,8 +707,11 @@ function Ledger({
         <button className="quick" onClick={() => void share()}>
           Share
         </button>
+        <button className="quick" onClick={() => void downloadPdf()} disabled={pdfBusy}>
+          {pdfBusy ? 'PDF…' : '↓ PDF'}
+        </button>
         <button className="quick" onClick={printStatement}>
-          Print / PDF
+          Print
         </button>
         <button className="quick" onClick={() => downloadCustomerCsv(customer)}>
           CSV
