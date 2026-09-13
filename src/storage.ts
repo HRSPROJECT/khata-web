@@ -118,7 +118,6 @@ export function downloadCustomerCsv(customer: Customer) {
   const csv = rows.map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(',')).join('\n')
   triggerDownload(new Blob([csv], { type: 'text/csv;charset=utf-8' }), `khata-${customer.name.replace(/\s+/g, '-').toLowerCase()}.csv`)
 }
-
 export function storageUsageBytes(): number {
   try {
     let total = 0
@@ -130,6 +129,18 @@ export function storageUsageBytes(): number {
     return total
   } catch {
     return 0
+  }
+}
+
+const SYNC_BACKUP_KEY = 'khata-react-data-sync-backup'
+
+// Safety snapshot taken automatically before incoming sync data is applied.
+export function saveSyncBackup(data: LedgerData): boolean {
+  try {
+    localStorage.setItem(SYNC_BACKUP_KEY, JSON.stringify({ ...data, savedAt: new Date().toISOString() }))
+    return true
+  } catch {
+    return false
   }
 }
 

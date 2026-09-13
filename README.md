@@ -26,6 +26,15 @@ The production build is a PWA: Web App Manifest, service worker, maskable icons,
 - Dark / light / system theme
 - Optional 4-digit PIN lock for this browser profile
 - JSON backup and CSV export with on-device storage meter — data never leaves the device unless you export it
+- **Device sync**: move the ledger between mobile and laptop with a 6-digit code — AES-GCM encrypted, single-use, with preview + Smart-merge or Replace (a safety snapshot is saved automatically)
+
+## Sync between mobile and laptop
+
+1. On the device with the latest ledger: **Sync → Send to another device → Generate code**.
+2. On the other device: **Sync → Receive from another device**, enter the 6-digit code.
+3. Preview what will arrive, then **Smart-merge** (union by entry — recommended when both devices have new entries) or **Replace**.
+
+No account and no cloud storage: the encrypted ledger passes through a public relay under your code and is wiped after delivery. Anyone holding the code while it is live could fetch it, so use it immediately. Settings (shop name, UPI ID, PIN, theme) never sync — only customers and transactions.
 
 ## Run locally
 

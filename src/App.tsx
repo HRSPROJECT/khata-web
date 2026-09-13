@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useEffect, useMemo, useRef, useState } from 'react'
+import { ChangeEvent, FormEvent, Suspense, lazy, useEffect, useMemo, useRef, useState } from 'react'
 import type { ContactFilter, ContactSort, Customer, LedgerData, Settings, Transaction, TransactionType } from './types'
 import {
   applyTheme,
@@ -8,6 +8,7 @@ import {
   isSessionUnlocked,
   loadLedger,
   saveLedger,
+  saveSyncBackup,
   setSessionUnlocked,
   storageUsageBytes,
 } from './storage'
@@ -33,8 +34,9 @@ import {
   waLink,
 } from './format'
 import { usePwaInstall } from './pwa'
+import { mergeLedgers } from './merge'
 
-type View = 'home' | 'reports' | 'settings' | 'customer'
+type View = 'home' | 'reports' | 'settings' | 'customer' | 'sync'
 type Modal = 'customer' | 'transaction' | 'pin' | 'ios-install' | 'edit-tx' | null
 
 function parseHash(): { view: View; id: string | null; newbie: boolean; shared: string } {
@@ -46,6 +48,7 @@ function parseHash(): { view: View; id: string | null; newbie: boolean; shared: 
   if (path.startsWith('/c/')) return { view: 'customer', id: decodeURIComponent(path.slice(3)), newbie: false, shared: '' }
   if (path.startsWith('/reports')) return { view: 'reports', id: null, newbie: false, shared: '' }
   if (path.startsWith('/settings')) return { view: 'settings', id: null, newbie: false, shared: '' }
+  if (path.startsWith('/sync')) return { view: 'sync', id: null, newbie: false, shared: '' }
   return { view: 'home', id: null, newbie, shared }
 }
 
@@ -224,7 +227,9 @@ function App() {
           </div>
         </div>
         <div className="top-actions">
-          {pwa.canInstall && (
+          <button className="outline small-only-text" onClick={() => go('/sync')}>
+            ⇄ <span>Sync</span>
+          </button>          {pwa.canInstall && (
             <button className="primary small-only-text" onClick={() => void pwa.install()}>
               ⊕ <span>Install app</span>
             </button>
@@ -299,6 +304,36 @@ function App() {
           />
         )}
         {view === 'reports' && <Reports customers={data.customers} totals={totals} business={data.settings.businessName} onSelect={id => go(`/c/${id}`)} />}
+        {view === 'sync' && (
+          <Suspense
+            fallback={
+              <div className="empty compact">
+                <h3>Loading sync…</h3>
+              </div>
+            }
+          >
+            <SyncPage
+              data={data}
+              onMerge={customers => {
+                saveSyncBackup(data)
+                const merged = mergeLedgers(data, customers)
+                const now = new Date().toISOString()
+                persist(
+                  { ...merged, settings: { ...merged.settings, lastSyncAt: now } },
+                  'Sync merged into this device',
+                )
+              }}
+              onReplace={customers => {
+                saveSyncBackup(data)
+                persist(
+                  { version: 2, customers, settings: { ...data.settings, lastSyncAt: new Date().toISOString() } },
+                  'Sync applied to this device',
+                )
+              }}
+              onTouchSync={() => updateSettings({ ...data.settings, lastSyncAt: new Date().toISOString() })}
+            />
+          </Suspense>
+        )}
         {view === 'settings' && (
           <SettingsPage
             data={data}
@@ -335,6 +370,9 @@ function App() {
           }}
         >
           ＋<span>Add</span>
+        </button>
+        <button className={view === 'sync' ? 'active' : ''} onClick={() => go('/sync')}>
+          ⇄<span>Sync</span>
         </button>
         <button className={view === 'settings' ? 'active' : ''} onClick={() => go('/settings')}>
           ⚙<span>Settings</span>
@@ -542,27 +580,9 @@ function Dashboard({
   )
 }
 
-function Stat({
-  label,
-  value,
-  tone: color,
-  hint,
-  count,
-}: {
-  label: string
-  value: number
-  tone: string
-  hint: string
-  count?: boolean
-}) {
-  return (
-    <article className={`stat ${color}`}>
-      <span>{label}</span>
-      <strong>{count ? value : `${value < 0 ? '-' : ''}${money(value)}`}</strong>
-      <small>{hint}</small>
-    </article>
-  )
-}
+import { Stat } from './Stat'
+
+const SyncPage = lazy(() => import('./SyncPage'))
 
 function Ledger({
   customer,
@@ -1050,6 +1070,19 @@ function SettingsPage({
           Save UPI ID
         </button>
       </form>
+      <div className="card">
+        <h2>Sync devices</h2>
+        <p className="muted">
+          {data.settings.lastSyncAt
+            ? `Last synced ${new Date(data.settings.lastSyncAt).toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' })}.`
+            : 'Move your ledger between mobile and laptop with a 6-digit code.'}
+        </p>
+        <div className="hero-actions wrap">
+          <button className="outline" onClick={() => go('/sync')}>
+            Open sync
+          </button>
+        </div>
+      </div>
       <div className="card">
         <h2>Install as an app</h2>
         <p className="muted">

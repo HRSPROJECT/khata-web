@@ -29,6 +29,7 @@ export type Settings = {
   upiId: string
   lockEnabled: boolean
   pinHash: string
+  lastSyncAt?: string
 }
 
 export type LedgerData = {

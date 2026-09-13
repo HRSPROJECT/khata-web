@@ -50,6 +50,13 @@ export default defineConfig({
             url: './#/reports',
             icons: [{ src: 'icon-192.png', sizes: '192x192' }],
           },
+          {
+            name: 'Sync devices',
+            short_name: 'Sync',
+            description: 'Move your ledger between mobile and laptop',
+            url: './#/sync',
+            icons: [{ src: 'icon-192.png', sizes: '192x192' }],
+          },
         ],
         // Makes the installed app reuse its window instead of opening a
         // second one, and lets shared text land in the ledger.
