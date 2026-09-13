@@ -40,7 +40,8 @@ export function CollectModal({
         const qr = qrcode(0, 'M')
         qr.addData(payLink)
         qr.make()
-        if (!cancelled) setQrSvg(qr.createSvgTag({ cellSize: 6, margin: 0, scalable: true }))
+        // margin 4 = the mandatory QR quiet zone; without it scanners fail.
+        if (!cancelled) setQrSvg(qr.createSvgTag({ cellSize: 8, margin: 4, scalable: true }))
       } catch {
         if (!cancelled) setQrError('Could not draw the QR. Use the Open UPI app link instead.')
       }

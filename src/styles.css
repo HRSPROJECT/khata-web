@@ -311,10 +311,12 @@ label input:focus { border-color: #a0a8ea; box-shadow: 0 0 0 3px #5b65d812; }
 .compact-stats .stat strong { font-size: 22px; }
 .qr-box {
   display: grid; justify-items: center; gap: 8px;
-  background: var(--bg); border: 1px solid var(--line); border-radius: 14px; padding: 18px 14px;
+  background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 18px 14px;
 }
 .qr-box small { color: var(--muted); font-size: 11px; font-weight: 700; }
-.qr-svg svg { width: min(240px, 64vw); height: auto; border-radius: 8px; background: #fff; }
+.qr-box .muted { color: var(--muted); }
+.qr-svg { line-height: 0; }
+.qr-svg svg { width: min(240px, 64vw); height: auto; border-radius: 4px; background: #fff; display: block; }
 .collect-open {
   display: block; text-align: center; text-decoration: none;
 }
