@@ -14,6 +14,12 @@ import {
   type SyncPayload,
 } from './sync'
 import { previewMerge, type MergePreview } from './merge'
+import { downloadBackup } from './storage'
+
+function goHome() {
+  if (window.location.hash === '#/') window.dispatchEvent(new HashChangeEvent('hashchange'))
+  else window.location.hash = '#/'
+}
 
 export default function SyncPage({
   data,
@@ -65,6 +71,14 @@ export default function SyncPage({
               <li>Preview what will arrive, then Smart-merge (recommended) or Replace.</li>
             </ol>
             <p className="muted">A safety snapshot of this device is saved automatically before anything is applied.</p>
+            <div className="hero-actions wrap">
+              <button className="outline" onClick={() => downloadBackup(data)}>
+                ↓ Export a backup first
+              </button>
+              <button className="outline" onClick={goHome}>
+                ← Back to Home
+              </button>
+            </div>
           </div>
         </>
       )}
@@ -203,6 +217,11 @@ function SyncSend({ data, onBack, onTouchSync }: { data: LedgerData; onBack: () 
         <button className="outline" onClick={cancel}>
           {phase === 'delivered' ? 'Done' : 'Cancel'}
         </button>
+        {phase === 'delivered' && (
+          <button className="outline" onClick={goHome}>
+            View ledger
+          </button>
+        )}
       </div>
     </div>
   )
@@ -331,9 +350,14 @@ function SyncReceive({
       {phase === 'done' && (
         <>
           <p className="sync-success">✓ Sync applied. Your ledger is up to date on this device.</p>
-          <button className="primary" onClick={onBack}>
-            Done
-          </button>
+          <div className="hero-actions wrap">
+            <button className="primary" onClick={onBack}>
+              Done
+            </button>
+            <button className="outline" onClick={goHome}>
+              View ledger
+            </button>
+          </div>
         </>
       )}
       {phase === 'error' && (

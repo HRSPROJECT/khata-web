@@ -52,6 +52,21 @@ a { color: inherit; }
 }
 .brand, .top-actions, .hero-actions, .profile, .section-head, .contact, .modal-head, .form-grid, .toolbar, .quick-row { display: flex; align-items: center; }
 .brand { gap: 11px; }
+.brand-home {
+  border: 0; background: transparent; padding: 4px 6px; margin-left: -6px; border-radius: 12px; text-align: left;
+  display: flex; align-items: center;
+}
+.brand-home:hover { background: color-mix(in srgb, var(--blue) 8%, transparent); }
+.top-nav { display: none; align-items: center; gap: 4px; }
+.top-nav button {
+  border: 0; background: transparent; color: var(--muted); font-weight: 700; font-size: 13px;
+  padding: 9px 14px; border-radius: 999px;
+}
+.top-nav button:hover { background: color-mix(in srgb, var(--blue) 8%, transparent); color: var(--ink); }
+.top-nav button.active { background: var(--blue-soft); color: var(--blue); }
+@media (min-width: 701px) {
+  .top-nav { display: flex; }
+}
 .brand-mark {
   height: 38px; width: 38px; background: var(--blue); color: #fff; border-radius: 11px;
   display: grid; place-items: center; font-weight: 800; font-size: 21px; box-shadow: 0 7px 16px #5b65d82e;

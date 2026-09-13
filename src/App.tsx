@@ -219,17 +219,29 @@ function App() {
         </div>
       )}
       <header className="topbar">
-        <div className="brand">
+        <button className="brand brand-home" onClick={() => go('/')} aria-label="Khata home">
           <div className="brand-mark">K</div>
           <div>
             <strong>Khata</strong>
             <small>{data.settings.businessName}</small>
           </div>
-        </div>
+        </button>
+        <nav className="top-nav" aria-label="Primary">
+          <button className={view === 'home' || view === 'customer' ? 'active' : ''} onClick={() => go('/')}>
+            Home
+          </button>
+          <button className={view === 'reports' ? 'active' : ''} onClick={() => go('/reports')}>
+            Reports
+          </button>
+          <button className={view === 'sync' ? 'active' : ''} onClick={() => go('/sync')}>
+            Sync
+          </button>
+          <button className={view === 'settings' ? 'active' : ''} onClick={() => go('/settings')}>
+            Settings
+          </button>
+        </nav>
         <div className="top-actions">
-          <button className="outline small-only-text" onClick={() => go('/sync')}>
-            ⇄ <span>Sync</span>
-          </button>          {pwa.canInstall && (
+          {pwa.canInstall && (
             <button className="primary small-only-text" onClick={() => void pwa.install()}>
               ⊕ <span>Install app</span>
             </button>
